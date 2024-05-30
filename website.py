@@ -31,7 +31,7 @@ class GMRest(BaseClient):
            before_sleep=lambda retry_state, **kwargs: logger.info(
                f"{retry_state.outcome.exception()} | Create Account Retrying... "),
            reraise=True)
-    async def login(self, login_message):
+    async def login(self):
         try:
             logger.info(f' {self.id} | {self.address} | Login starts...')
             solution = await self.captcha_process()
@@ -57,14 +57,18 @@ class GMRest(BaseClient):
 
             if response.status != 200 or "error" in await response.text():
                 raise aiohttp.ClientConnectionError(f" {self.id} | Create acc response: | {await response.text()}")
-            logger.info(f" {self.id} | {self.address} | {login_message}")
-
             response_json = await response.json()
             self.access_token = response_json["result"]['access_token']
-
             await self.add_access_token()
 
-            return await response.json()
+            if response_json["result"]["user_info"]["agent"] == {}:
+                logger.info(f" {self.id} | {
+                            self.address} | New account created!")
+                return response_json
+
+            logger.info(f" {self.id} | {self.address} | Account login")
+
+            return response_json
 
         except aiohttp.ClientConnectionError as e:
             logger.error(
