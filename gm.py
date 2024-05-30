@@ -62,9 +62,12 @@ class GM(GMRest):
         new_accounts = await read_file_lines("data/new_accounts.txt")
         accounts = await get_accounts('data/accounts.json')
 
+        response_json = await self.login()
+
         if self.address not in new_accounts:
-            await self.login(login_message='New account created!')
             await append_file_lines("data/new_accounts.txt", self.address)
+
+        if response_json["result"]["user_info"]["agent"] == {}:
             await asyncio.sleep(random.randint(MIN_TIME, MAX_TIME))
 
             response_invite = await self.inviting()
@@ -82,7 +85,6 @@ class GM(GMRest):
             await asyncio.sleep(random.randint(MIN_TIME, MAX_TIME))
 
         else:
-            await self.login(login_message='Account login')
             await asyncio.sleep(random.randint(MIN_TIME, MAX_TIME))
 
     async def account_process(self):
