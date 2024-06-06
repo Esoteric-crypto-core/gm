@@ -47,12 +47,14 @@ class GM(GMRest):
                 task_id = task['id']
                 message = task['title']
 
-                task_response = await self.task(task_id=task_id, category=1, message=f'{message} Send request')
-                await asyncio.sleep(random.randint(MIN_TIME, MAX_TIME))
-
-                if task_response['success'] == True:
-                    await self.task(task_id=task_id, category=2, message=message)
+                if task_id != "910388748538945778":
+                    task_response = await self.task(task_id=task_id, category=1, message=f'{message} Send request')
                     await asyncio.sleep(random.randint(MIN_TIME, MAX_TIME))
+    
+                    if task_response['success'] == True:
+                        await self.task(task_id=task_id, category=2, message=message)
+                        await asyncio.sleep(random.randint(MIN_TIME, MAX_TIME))
+                task_response = await self.task(task_id=task_id, category=2, message=f'{message} claimed')
 
             logger.info(f" {self.id} | {self.address} | Tasks completed!")
 
