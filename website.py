@@ -178,7 +178,7 @@ class GMRest(BaseClient):
             daily_energy = response_json["result"]["daily"]
         daily_energy = float(str(daily_energy).replace(
             '(', '').replace(')', '').replace(',', '').strip())
-        total_energy = float(response_json["result"]["total"])
+        total_energy = float(response_json["result"]["total_energy"])
 
         logger.info(f" {self.id} | {self.address} | Daily energy: {
                     daily_energy}; Total energy: {total_energy}")
